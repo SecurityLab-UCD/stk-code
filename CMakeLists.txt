@@ -46,6 +46,13 @@ CMAKE_DEPENDENT_OPTION(USE_WIIUSE "Support for wiimote input devices" ON
 CMAKE_DEPENDENT_OPTION(USE_DNS_C "Build bundled dns resolver" OFF "NOT CYGWIN;NOT USE_SWITCH" ON)
 CMAKE_DEPENDENT_OPTION(USE_MOJOAL "Use bundled MojoAL instead of system OpenAL" OFF "NOT APPLE" ON)
 
+# Enable coverage flags for clang++
+if(CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+    add_compile_options(-fprofile-instr-generate -fcoverage-mapping)
+    add_link_options(-fprofile-instr-generate)
+endif()
+
+
 if (DLOPEN_MOLTENVK)
     ADD_DEFINITIONS(-DDLOPEN_MOLTENVK)
 endif()
@@ -916,3 +923,10 @@ if(MINGW)
     install(DIRECTORY ${CMAKE_BINARY_DIR}/bin/ DESTINATION ${STK_INSTALL_BINARY_DIR}
             FILES_MATCHING PATTERN "*.dll")
 endif()
+
+add_custom_target(coverage
+    COMMAND llvm-profdata merge -sparse default.profraw -o default.profdata
+    COMMAND llvm-cov show ./bin/supertuxkart -instr-profile=default.profdata -format=html -output-dir=coverage_report
+    WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+    COMMENT "Generating coverage report"
+)
