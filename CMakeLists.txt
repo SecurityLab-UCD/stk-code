@@ -924,9 +924,17 @@ if(MINGW)
             FILES_MATCHING PATTERN "*.dll")
 endif()
 
+# Build coverage html report
+# determine the executable name based on the platform
+if(WIN32)
+    set(EXECUTABLE_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/supertuxkart.exe")
+else()
+    set(EXECUTABLE_PATH "${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/supertuxkart")
+endif()
+
 add_custom_target(coverage
     COMMAND llvm-profdata merge -sparse default.profraw -o default.profdata
-    COMMAND llvm-cov show ./bin/supertuxkart -instr-profile=default.profdata -format=html -output-dir=coverage_report
+    COMMAND llvm-cov show  ${EXECUTABLE_PATH} -instr-profile=default.profdata -format=html -output-dir=coverage_report
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Generating coverage report"
 )
