@@ -925,8 +925,8 @@ if(MINGW)
 endif()
 
 add_custom_target(coverage
-    COMMAND llvm-profdata merge -sparse default.profraw -o default.profdata
-    COMMAND llvm-cov show ./bin/supertuxkart -instr-profile=default.profdata -format=html -output-dir=coverage_report
+    COMMAND llvm-profdata merge -sparse *.profraw -o default.profdata
+    COMMAND llvm-cov export ./bin/supertuxkart -instr-profile=default.profdata -format=text -summary-only > coverage.json
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Generating coverage report"
 )
