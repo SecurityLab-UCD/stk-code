@@ -926,7 +926,7 @@ endif()
 
 add_custom_target(coverage
     COMMAND llvm-profdata merge -sparse *.profraw -o default.profdata
-    COMMAND llvm-cov export ./bin/supertuxkart -instr-profile=default.profdata -format=text > coverage.json
+    COMMAND llvm-cov export ./bin/supertuxkart -instr-profile=default.profdata -format=text -summary-only > coverage.json
     WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
     COMMENT "Generating coverage report"
 )
